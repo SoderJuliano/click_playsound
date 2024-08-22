@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Sound on Key Press</title>
+</head>
+<body>
+    <h1>Play Sound on Key Press</h1>
+
+    <h2>Overview</h2>
+    <p>This project provides a Python script that plays a sound file when a specific key is pressed. It also includes a systemd service file for running this script as a background service that starts automatically on system boot.</p>
+
+    <h2>Requirements</h2>
+    <ul>
+        <li><strong>Python 3.x</strong>: Ensure Python 3 is installed on your system.</li>
+        <li><strong>pygame</strong>: The Python package used to handle sound playback.</li>
+        <li><strong>systemd</strong>: For managing the service.</li>
+    </ul>
+
+    <h2>Installation and Setup</h2>
+
+    <h3>1. Set Up Python Virtual Environment</h3>
+    <ol>
+        <li>Navigate to the project directory:
+            <pre><code>cd /home/soder/Documents/system</code></pre>
+        </li>
+        <li>Create a Python virtual environment:
+            <pre><code>python3 -m venv myenv</code></pre>
+        </li>
+        <li>Activate the virtual environment:
+            <pre><code>source myenv/bin/activate</code></pre>
+        </li>
+        <li>Install required Python packages:
+            <pre><code>pip install pygame</code></pre>
+        </li>
+    </ol>
+
+    <h3>2. Create the Python Script</h3>
+    <p>Ensure your Python script (<code>playsound.py</code>) is in the project directory:</p>
+    <pre><code># playsound.py
+
+import pygame
+import sys
+from pygame.locals import KEYDOWN, K_s, K_d
+
+pygame.init()
+pygame.mixer.init()
+sound = pygame.mixer.Sound('key_press.wav')
+
+print("Starting key listener...")
+
+while True:
+    for event in pygame.event.get():
+        if event.type == KEYDOWN:
+            if event.key == K_s or event.key == K_d:
+                print(f"Key pressed: {pygame.key.name(event.key)}")
+                sound.play()
+    </code></pre>
+
+    <h3>3. Create the Systemd Service File</h3>
+    <ol>
+        <li>Create and edit the systemd service file:
+            <pre><code>sudo nano /etc/systemd/system/playsound.service</code></pre>
+        </li>
+        <li>Add the following content to the file:
+            <pre><code>[Unit]
+Description=Play Sound on Key Press
+After=network.target
+
+[Service]
+Type=simple
+User=soder
+ExecStart=/home/soder/Documents/system/myenv/bin/python3 /home/soder/Documents/system/playsound.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+    </code></pre>
+        </li>
+        <li>Save and exit the editor.</li>
+    </ol>
+
+    <h3>4. Manage the Service</h3>
+    <ol>
+        <li>Reload systemd to recognize the new service file:
+            <pre><code>sudo systemctl daemon-reload</code></pre>
+        </li>
+        <li>Enable the service to start on boot:
+            <pre><code>sudo systemctl enable playsound.service</code></pre>
+        </li>
+        <li>Start the service immediately:
+            <pre><code>sudo systemctl start playsound.service</code></pre>
+        </li>
+        <li>Check the status of the service:
+            <pre><code>sudo systemctl status playsound.service</code></pre>
+        </li>
+        <li>View service logs if needed:
+            <pre><code>sudo journalctl -u playsound.service</code></pre>
+        </li>
+    </ol>
+
+    <h2>Troubleshooting</h2>
+    <ul>
+        <li><strong>Permissions Issues</strong>: Ensure that the Python script and virtual environment have the correct permissions. The script should be executable (<code>chmod +x playsound.py</code>).</li>
+        <li><strong>Path Issues</strong>: Double-check that paths in the service file are correct and accessible.</li>
+        <li><strong>Service Errors</strong>: Use <code>journalctl</code> to inspect service logs for detailed error messages.</li>
+    </ul>
+
+    <h2>License</h2>
+    <p>This project is licensed under the MIT License - see the <a href="LICENSE">LICENSE</a> file for details.</p>
+</body>
+</html>
