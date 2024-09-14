@@ -15,22 +15,30 @@ sound = pygame.mixer.Sound(sound_file)
 
 # State variables
 ctrl_pressed = False
+keys_held = set()  # To track keys that are currently held down
 
 def on_press(key):
     global ctrl_pressed
     try:
         if key == keyboard.Key.ctrl_l or key == keyboard.Key.ctrl_r:
             ctrl_pressed = True
-        print(f"Key pressed: {key.char}")
+        
+        # Check if key is already held down
+        if key not in keys_held:
+            keys_held.add(key)  # Mark key as held
+            print(f"Key pressed: {key.char}")
+            # Play the sound only when the key is first pressed
+            sound.play()
+            time.sleep(0.1)  # Brief pause to prevent overlapping sound issues
     except AttributeError:
         print(f"Special key pressed: {key}")
 
-    # Play the sound
-    sound.play()
-    time.sleep(0.1)  # Brief pause to prevent overlapping sound issues
-
 def on_release(key):
     global ctrl_pressed
+    # Remove key from held keys when released
+    if key in keys_held:
+        keys_held.remove(key)
+
     if key == keyboard.Key.ctrl_l or key == keyboard.Key.ctrl_r:
         ctrl_pressed = False
     elif key == keyboard.Key.esc and ctrl_pressed:
