@@ -1,6 +1,3 @@
-Here's a cleaned-up version of the README for your project:
-
----
 
 # Keypress Sound Script with systemd Service
 
