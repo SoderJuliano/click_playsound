@@ -10,16 +10,28 @@
 
     <h2>Overview</h2>
     <p>This project provides a Python script that plays a sound file when a specific key is pressed. It also includes a systemd service file for running this script as a background service that starts automatically on system boot.</p>
-
+    
     <h2>Requirements</h2>
+    
+    <h3>Update 14-09-24</h3>
+    
+    <b>All you need to do now is:</b>
+    <p>Go to the downloaded repo, find the file <code>clicker.sh</code>, and run:</p>
+    <code>chmod +x clicker.sh</code>
+    <code>./clicker.sh</code>
+    
+    ------------------------------------------------------
+    
+    <h2>Previous steps (Old):</h2>
+    
     <ul>
         <li><strong>Python 3.x</strong>: Ensure Python 3 is installed on your system.</li>
         <li><strong>pygame</strong>: The Python package used to handle sound playback.</li>
         <li><strong>systemd</strong>: For managing the service.</li>
     </ul>
-
+    
     <h2>Installation and Setup</h2>
-
+    
     <h3>1. Set Up Python Virtual Environment</h3>
     <ol>
         <li>Navigate to the project directory:
@@ -35,28 +47,8 @@
             <pre><code>pip install pygame</code></pre>
         </li>
     </ol>
-
     <h3>2. Create the Python Script</h3>
     <p>Ensure your Python script (<code>playsound.py</code>) is in the project directory:</p>
-    <pre><code># playsound.py
-
-import pygame
-import sys
-from pygame.locals import KEYDOWN, K_s, K_d
-
-pygame.init()
-pygame.mixer.init()
-sound = pygame.mixer.Sound('key_press.wav')
-
-print("Starting key listener...")
-
-while True:
-    for event in pygame.event.get():
-        if event.type == KEYDOWN:
-            if event.key == K_s or event.key == K_d:
-                print(f"Key pressed: {pygame.key.name(event.key)}")
-                sound.play()
-    </code></pre>
 
     <h3>3. Create the Systemd Service File</h3>
     <ol>
